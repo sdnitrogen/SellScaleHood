@@ -1,4 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+.gitignore
 
 # dependencies
 /client/node_modules
@@ -42,3 +43,4 @@ yarn-error.log*
 /server/.env
 /server/dump.rdb
 /server/__pycache__
+/server/instance/

@@ -9,7 +9,7 @@ import useCurrentUser from "@/hooks/useCurrentUser"
 import useGetHoldings from "@/hooks/useGetHoldings"
 import useGetWatchlist from "@/hooks/useGetWatchlist"
 import { searchAllStocks } from "@/lib/actions/stock.action"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 
 const Home = () => {
   const { holdings: holdingsdata } = useGetHoldings()
