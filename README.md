@@ -6,6 +6,10 @@ Built for SellScale.
 
 ![Dev Status](https://img.shields.io/badge/Development-Completed-1471DC?style=for-the-badge)
 
+Demo 1 (For end-users) : [Link](https://www.loom.com/share/20ca8c673e0a455b96bef234b9ecc506?sid=7f721877-ef2d-4158-b2b6-51313e90991b)
+
+Demo 2 (For engineers) : [Link](https://www.loom.com/share/780c8d0a24f0492bb2bef81f6565fed8?sid=68903e4f-efeb-49e7-b461-54517284ea20)
+
 ### Features
 
 - [x] User authentication

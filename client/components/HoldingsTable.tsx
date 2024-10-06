@@ -36,9 +36,15 @@ const HoldingsTable = ({
             (stock) => stock.symbol === t.ticker
           )
           const price = foundStockValue?.currentPrice
-          const isPos = price ? t.volume * price > Number(t.investment) : false
-          const isNeg = price ? t.volume * price < Number(t.investment) : false
-          const isEq = price ? t.volume * price === Number(t.investment) : false
+          const isPos = price
+            ? Number((t.volume * price).toFixed(2)) > Number(t.investment)
+            : false
+          const isNeg = price
+            ? Number((t.volume * price).toFixed(2)) < Number(t.investment)
+            : false
+          const isEq = price
+            ? Number((t.volume * price).toFixed(2)) === Number(t.investment)
+            : false
 
           return (
             <TableRow
