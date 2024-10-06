@@ -196,7 +196,11 @@ const StockDetails = ({ params }: StockDetailProps) => {
       setStockInfo(response)
     }
     getStockInfo()
-    !selected && setSeclected(accounts.length > 0 ? accounts[0] : null)
+    if (!selected && accounts.length > 0) setSeclected(accounts[0])
+    if (selected && accounts.length > 0) {
+      const account = accounts.find((account) => account.id === selected.id)!
+      setSeclected(account)
+    }
     setInWatchlist(watchlist.find((w) => w.ticker === symbol) ? true : false)
   }, [accounts, watchlist])
 

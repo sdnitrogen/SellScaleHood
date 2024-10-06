@@ -60,12 +60,14 @@ def signup_user():
 
   new_user = User(email = email, password = hashed_password, firstName = firstName, lastName = lastName, address1 = address1, city = city, state= state, postalCode = postalCode, dateOfBirth = dateOfBirth)
   db.session.add(new_user)
+  
+  db.session.commit()
 
-  default_watchlist = ["AAPL", "GOOGL" "AMZN"]
+  default_watchlist = ["AAPL", "GOOGL", "AMZN"]
   for stock in default_watchlist:
     watchlist_entry = Watchlist(userId = new_user.id, ticker = stock)
     db.session.add(watchlist_entry)
-  
+
   db.session.commit()
 
   session["user_id"] = new_user.id
@@ -119,17 +121,14 @@ def add_user_bank_account():
   userId = request.json["userId"]
   bankAccounts = request.json["bankAccounts"]
 
-  added_accounts = []
-
   for bankAccount in bankAccounts:
     new_bank_account = Account(userId = userId, name = bankAccount["name"], mask = bankAccount["mask"], currentBalance = bankAccount["currentBalance"])
     db.session.add(new_bank_account)
-    added_accounts.append(new_bank_account["id"])
 
   db.session.commit()
 
   return jsonify({
-    "bankAccounts": added_accounts,
+    "msg": "Successfully added default accounts",
   })
 
 @app.route("/get-bank-accounts", methods=["GET"])

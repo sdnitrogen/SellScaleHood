@@ -142,7 +142,7 @@ const AuthForm = ({ type }: { type: string }) => {
           </div>
           <Button
             variant="link"
-            className="mt-8 justify-start text-md font-semibold w-fit"
+            className="mt-8 justify-start text-md font-semibold w-fit text-bankGradient"
             onClick={handleBankAddition}>
             Get Started
           </Button>
