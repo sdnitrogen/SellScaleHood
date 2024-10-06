@@ -22,12 +22,14 @@ const Home = () => {
   const { loggedIn } = useCurrentUser()
   const { watchlist: watchlistData } = useGetWatchlist()
 
+  // Receive required data and set them in a state variable so as to update them easily later
   useEffect(() => {
     setAccounts(acccountsData)
     setHoldings(holdingsdata)
     setWatchlist(watchlistData)
   }, [acccountsData, holdingsdata, watchlistData])
 
+  // as accounts data, watchlist and stock holdings change, update the other dependent data on page
   useEffect(() => {
     const watch_stocks = watchlist.map((w) => w.ticker)
     const holding_stocks = holdings.map((h) => h.ticker)

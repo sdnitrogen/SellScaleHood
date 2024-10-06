@@ -41,6 +41,7 @@ const Sidebar = ({ user }: SiderbarProps) => {
     }
   }
 
+  // allows search on pressing enter/return
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       event.preventDefault() // Prevent form submission if inside a form

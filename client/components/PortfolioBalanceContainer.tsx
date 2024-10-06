@@ -10,8 +10,8 @@ const PortfolioBalanceContainer = ({
   const holdingValue = holdings.reduce(
     (sum, holding) =>
       (sum +=
-        stocks.find((stock) => stock.symbol === holding.ticker)?.currentPrice! *
-        holding.volume),
+        (stocks.find((stock) => stock.symbol === holding.ticker)
+          ?.currentPrice ?? 0) * holding.volume),
     0
   )
   const capInvested = holdings.reduce(

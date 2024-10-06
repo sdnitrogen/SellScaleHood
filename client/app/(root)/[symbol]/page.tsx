@@ -56,8 +56,9 @@ const StockDetails = ({ params }: StockDetailProps) => {
   const [holdings, setHoldings] = useState<Holding[]>([])
   const [watchlist, setWatchlist] = useState<Watchlist[]>([])
 
+  // Receive required data and set them in a state variable so as to update them easily later
   useEffect(() => {
-    acccountsData?.data && setAccounts(acccountsData.data)
+    if (acccountsData?.data) setAccounts(acccountsData.data)
     setHoldings(holdingsdata)
     setWatchlist(watchlistData)
   }, [acccountsData, holdingsdata, watchlistData])
@@ -66,7 +67,7 @@ const StockDetails = ({ params }: StockDetailProps) => {
   const [selected, setSeclected] = useState<Account | null>(null)
   const [inWatchlist, setInWatchlist] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const { symbol } = params
+  const { symbol } = params // Get the symbol value from params as it's a dynamic url
   const foundStock = holdings.find((h) => h.ticker === symbol)
 
   const [quantity, setQuantity] = useState(1)
@@ -105,8 +106,9 @@ const StockDetails = ({ params }: StockDetailProps) => {
         from: selected.id!,
       }
       const response = await buyStock(buyingData)
-      response.accounts && setAccounts(response.accounts)
-      response.holdings && setHoldings(response.holdings)
+      // update state values from the received response data
+      if (response.accounts) setAccounts(response.accounts)
+      if (response.holdings) setHoldings(response.holdings)
       toast({
         variant: "success",
         title: "Success!",
@@ -146,8 +148,8 @@ const StockDetails = ({ params }: StockDetailProps) => {
         to: selected.id!,
       }
       const response = await sellStock(sellingData)
-      response.accounts && setAccounts(response.accounts)
-      response.holdings && setHoldings(response.holdings)
+      if (response.accounts) setAccounts(response.accounts)
+      if (response.holdings) setHoldings(response.holdings)
       toast({
         variant: "success",
         title: "Success!",
@@ -165,9 +167,10 @@ const StockDetails = ({ params }: StockDetailProps) => {
     // Handle watchlist action
     try {
       if (inWatchlist) {
+        // remove from watchlist
         const data = { ticker: symbol }
         const response = await removeWatchlist(data)
-        response.watchlist && setWatchlist(response.watchlist)
+        if (response.watchlist) setWatchlist(response.watchlist)
         toast({
           variant: "success",
           title: "Success!",
@@ -175,9 +178,10 @@ const StockDetails = ({ params }: StockDetailProps) => {
           action: <ToastAction altText="Done">Done!</ToastAction>,
         })
       } else {
+        // add to watchlist
         const data = { ticker: symbol }
         const response = await addToWatchlist(data)
-        response.watchlist && setWatchlist(response.watchlist)
+        if (response.watchlist) setWatchlist(response.watchlist)
         toast({
           variant: "success",
           title: "Success!",
@@ -190,6 +194,7 @@ const StockDetails = ({ params }: StockDetailProps) => {
     }
   }
 
+  // update bank account details in the selection input, watchlist update and get latest stock info
   useEffect(() => {
     const getStockInfo = async () => {
       const response = await searchStock(symbol)
@@ -352,12 +357,16 @@ const StockDetails = ({ params }: StockDetailProps) => {
                 <Plus className="w-4 h-4" />
               </Button>
             </div>
-            <span className="text-sm">
-              Buying Power: {formatAmount(selected?.currentBalance!)}
-            </span>
-            <span className="text-sm mb-4">
-              Total Value: {formatAmount(quantity * stockInfo?.currentPrice!)}
-            </span>
+            {selected?.currentBalance && (
+              <span className="text-sm">
+                Buying Power: {formatAmount(selected?.currentBalance)}
+              </span>
+            )}
+            {stockInfo?.currentPrice && (
+              <span className="text-sm mb-4">
+                Total Value: {formatAmount(quantity * stockInfo?.currentPrice)}
+              </span>
+            )}
             <Button
               onClick={handleBuy}
               className="w-full bg-blue-500 hover:bg-bank-blue-gradient font-semibold"

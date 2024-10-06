@@ -18,6 +18,8 @@ db.init_app(app)
 with app.app_context():
   db.create_all()
 
+
+# Get current logged in user details
 @app.route("/@user")
 def get_current_user():
   user_id = session.get("user_id")
@@ -39,6 +41,7 @@ def get_current_user():
     "dateOfBirth": user.dateOfBirth,
   })  
 
+# sign-up an user
 @app.route("/signup", methods=["POST"])
 def signup_user():
   email = request.json["email"]
@@ -63,6 +66,7 @@ def signup_user():
   
   db.session.commit()
 
+  # Add some stocks in the watchlist by default
   default_watchlist = ["AAPL", "GOOGL", "AMZN"]
   for stock in default_watchlist:
     watchlist_entry = Watchlist(userId = new_user.id, ticker = stock)
@@ -84,6 +88,7 @@ def signup_user():
     "dateOfBirth": new_user.dateOfBirth,
   })
 
+# Sign-in an user
 @app.route("/signin", methods=["POST"])
 def signin_user():
   email = request.json["email"]
@@ -111,11 +116,13 @@ def signin_user():
     "dateOfBirth": user.dateOfBirth,
   })
 
+# Sign-out an user
 @app.route("/signout", methods=["POST"])
 def signout_user():
   session.pop("user_id")
   return "200"
 
+# add bank accounts to an user profile
 @app.route("/add-bank-accounts", methods=["POST"])
 def add_user_bank_account():
   userId = request.json["userId"]
@@ -131,6 +138,7 @@ def add_user_bank_account():
     "msg": "Successfully added default accounts",
   })
 
+# get the all bank accounts of an user
 @app.route("/get-bank-accounts", methods=["GET"])
 def get_user_bank_accounts():
   user_id = session["user_id"]
@@ -147,6 +155,7 @@ def get_user_bank_accounts():
     "bankAccounts": bank_accounts,
   })
 
+# Add a stock to watchlist
 @app.route("/add-watchlist", methods=["POST"])
 def add_user_watchlist():
   user_id = session["user_id"]
@@ -173,6 +182,7 @@ def add_user_watchlist():
     "watchlist": watchlist,
   })
 
+# Remove a stock from watchlist
 @app.route("/remove-watchlist", methods=["POST"])
 def remove_user_watchlist():
   user_id = session["user_id"]
@@ -197,6 +207,7 @@ def remove_user_watchlist():
     "watchlist": watchlist,
   })
 
+# Retrieve all stocks in a user's watchlist
 @app.route("/get-watchlist", methods=["GET"])
 def get_user_watchlist():
   user_id = session["user_id"]
@@ -213,6 +224,7 @@ def get_user_watchlist():
     "watchlist": watchlist,
   })
 
+# search for details of a stock symbol using yfinance
 @app.route('/api/stock/<ticker>', methods=['GET'])
 def get_stock_info(ticker):
     try:
@@ -259,6 +271,7 @@ def get_stock_info(ticker):
     except Exception as e:
         return jsonify({'error': f'Failed to fetch stock information: {str(e)}'}), 500
     
+# Fetch stock details for multiple stocks    
 @app.route('/api/stocks/<tickers>', methods=['GET'])
 def get_stocks_info(tickers):
     stocks = tickers.split(",")
@@ -289,6 +302,8 @@ def get_stocks_info(tickers):
           return jsonify({'error': f'Failed to fetch stock information: {str(e)}'}), 500
     return jsonify(output_stocks), 200
 
+
+# Buy a stock
 @app.route('/buy', methods=['POST'])
 def buy_stock():
     user_id = session["user_id"]
@@ -299,6 +314,7 @@ def buy_stock():
     if not user_id:
       return jsonify({"error": "Unauthorized"}), 401
 
+    # fetch stock info for the latest price
     response = get_stock_info(ticker)
     if response.json["name"] is None:
       return jsonify({"error": "Couldn't find a stock with that symbol!."}), 400
@@ -342,6 +358,8 @@ def buy_stock():
        "holdings": user_holdings
        }), 200
 
+
+# Sell a stock
 @app.route('/sell', methods=['POST'])
 def sell_stock():
     user_id = session["user_id"]
@@ -352,6 +370,7 @@ def sell_stock():
     if not user_id:
       return jsonify({"error": "Unauthorized"}), 401
     
+    # Fetch the stock details for latest price
     response = get_stock_info(ticker)
     if response.json["name"] is None:
       return jsonify({"error": "Couldn't find a stock with that symbol!."}), 400
@@ -405,6 +424,8 @@ def sell_stock():
     else:
         return jsonify({"error": "Stock not found in portfolio" }), 404
     
+
+# get all the stocks in portfolio    
 @app.route("/holdings", methods=["GET"])
 def get_user_holdings():
   user_id = session["user_id"]
@@ -420,6 +441,7 @@ def get_user_holdings():
     "holdings": holdings,
   })
 
+# get all stock tradings
 @app.route("/transactions", methods=["GET"])
 def get_user_transactions():
   user_id = session["user_id"]

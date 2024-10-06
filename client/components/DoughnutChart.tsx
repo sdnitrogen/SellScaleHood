@@ -12,11 +12,12 @@ import {
 } from "@/components/ui/chart"
 
 const DoughNutChart = ({ holdings, cash, stocks }: DoughnutChartProps) => {
+  // create and configure the data for the donut chart
   const chartData = holdings.map((hold) => ({
     name: hold.ticker,
     value:
       hold.volume *
-      stocks.find((stock) => stock.symbol === hold.ticker)?.currentPrice!,
+      (stocks.find((stock) => stock.symbol === hold.ticker)?.currentPrice ?? 0),
     fill: `var(--color-${hold.ticker})`,
   }))
 

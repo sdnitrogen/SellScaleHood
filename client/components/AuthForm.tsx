@@ -19,7 +19,7 @@ import { MOCK_BANK_ACCOUNTS } from "@/constants"
 import { addBankAccounts } from "@/lib/actions/bank.actions"
 
 const AuthForm = ({ type }: { type: string }) => {
-  const banks = MOCK_BANK_ACCOUNTS
+  const banks = MOCK_BANK_ACCOUNTS // default bank accounts being added to users at sign-up, should be a different process for actual bank linking
 
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
@@ -72,6 +72,7 @@ const AuthForm = ({ type }: { type: string }) => {
     }
   }
 
+  // adds the default banks to a newly created account
   const handleBankAddition = async () => {
     try {
       const response = await addBankAccounts({
