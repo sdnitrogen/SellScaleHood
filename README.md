@@ -20,6 +20,15 @@ Demo 2 (For engineers) : [Link](https://www.loom.com/share/780c8d0a24f0492bb2bef
 - [x] Buy/Sell stocks
 - [x] View their trading history
 
+### Improvements
+
+- [ ] Ability to Add/withdraw funds from the bank accounts
+- [ ] Ability to add/remove the linked bank accounts
+- [ ] Unit and E2E tests
+- [ ] Live updating stock values
+- [ ] Ability to buy fractional stocks based on money
+- [ ] Fix breaking mobile responsiveness
+
 ### Technologies
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
