@@ -7,6 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { formatAmount } from "@/lib/utils"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 
 const HoldingsTable = ({
@@ -22,6 +23,7 @@ const HoldingsTable = ({
     <Table>
       <TableHeader className="bg-[#f9fafb]">
         <TableRow>
+          <TableHead className="px-2">Logo</TableHead>
           <TableHead className="px-2">Symbol</TableHead>
           <TableHead className="px-2">Shares</TableHead>
           <TableHead className="px-2">Price</TableHead>
@@ -51,6 +53,16 @@ const HoldingsTable = ({
               key={t.id}
               className="!over:bg-none !border-b-DEFAULT cursor-pointer"
               onClick={() => router.push(`/${foundStockValue?.symbol}`)}>
+              <TableCell className="pl-2 pr-10">
+                {foundStockValue?.website && (
+                  <Image
+                    src={`https://logo.clearbit.com/${foundStockValue?.website}`}
+                    alt="Logo"
+                    width={20}
+                    height={20}
+                  />
+                )}
+              </TableCell>
               <TableCell className="max-w-[250px] pl-2 pr-10">
                 <div className="flex items-center gap-3">
                   <h1

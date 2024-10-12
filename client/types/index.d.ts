@@ -169,6 +169,7 @@ declare interface Stock {
   sector: string
   previousClose: number
   history?: StockHistory[]
+  website?: string
 }
 
 declare interface Watchlist {

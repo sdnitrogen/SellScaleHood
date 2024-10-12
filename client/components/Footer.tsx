@@ -7,6 +7,7 @@ const Footer = ({ user, type = "desktop" }: FooterProps) => {
   const router = useRouter()
 
   const handleLogOut = async () => {
+    localStorage.removeItem("searchHistory")
     const loggedOut = await signOut()
 
     if (loggedOut) router.push("/sign-in")

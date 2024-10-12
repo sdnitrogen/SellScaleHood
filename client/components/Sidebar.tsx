@@ -14,6 +14,7 @@ import { Loader2, Search } from "lucide-react"
 import { searchStock } from "@/lib/actions/stock.action"
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
+import { Badge } from "./ui/badge"
 
 const Sidebar = ({ user }: SiderbarProps) => {
   const pathname = usePathname()
@@ -22,19 +23,45 @@ const Sidebar = ({ user }: SiderbarProps) => {
   const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(false)
 
+  const [searchHistory, setSearchHistory] = useState(() => {
+    // Load initial state from localStorage if available
+    const storedHistory = localStorage.getItem("searchHistory")
+    return storedHistory ?? ""
+  })
+
   const handleSearch = async () => {
     if (searchTerm === "") return
     setLoading(true)
     const response = await searchStock(searchTerm.toUpperCase())
     if (!response.name) {
       toast({
-        variant: "success",
+        variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: "Couldn't find a stock with that symbol!.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
+        description: `Did you mean to search ${response.correction}?`,
+        action: (
+          <ToastAction
+            altText="Try again"
+            onClick={() => setSearchTerm(response.correction)}>
+            Try again
+          </ToastAction>
+        ),
       })
       setLoading(false)
     } else {
+      let searchHistoryArray = searchHistory.split(",")
+      if (
+        searchHistoryArray.length > 0 &&
+        searchHistoryArray.includes(searchTerm)
+      ) {
+        searchHistoryArray = searchHistoryArray.filter(
+          (item) => item !== searchTerm
+        )
+      }
+      const newHistory = [searchTerm, ...searchHistoryArray]
+        .slice(0, 3)
+        .join(",")
+      localStorage.setItem("searchHistory", newHistory)
+      setSearchHistory(newHistory)
       router.push(`/${searchTerm.toUpperCase()}`)
       setSearchTerm("")
       setLoading(false)
@@ -84,6 +111,21 @@ const Sidebar = ({ user }: SiderbarProps) => {
               {!loading && <Search className="h-4 w-4" />}
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             </Button>
+          </div>
+          <div className="text-xs text-black-2 font-semibold my-2 flex gap-2">
+            {searchHistory !== "" &&
+              searchHistory
+                .split(",")
+                .filter((r) => r !== "")
+                .map((ticker, index) => {
+                  return (
+                    <Badge
+                      key={index}
+                      className="bg-bankGradient px-3 hover:bg-bankGradient cursor-default">
+                      {ticker}
+                    </Badge>
+                  )
+                })}
           </div>
         </div>
         {sidebarLinks.map((item) => {

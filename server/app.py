@@ -1,7 +1,10 @@
 import decimal
+import os
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from flask_session import Session
+from openai import OpenAI
 from models import Account, Holding, Trade, Watchlist, db, User
 from config import ApplicationConfig
 from flask_bcrypt import Bcrypt
@@ -255,6 +258,44 @@ def get_stock_info(ticker):
             name = info.get('longName', None)
             sector = info.get('sector', None)
             previousClose = info.get('previousClose', None)
+            if name is None:
+              ask = f"An user is searching for a stock symbol. They typed {ticker} in the searchbox. What stock symbol could they be searching for? Give me only the symbol as the response."
+
+              # Initialize OpenAI client with API key
+              load_dotenv()
+              OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+              client = OpenAI(
+                # This is the default and can be omitted
+                api_key=os.environ.get("OPENAI_API_KEY"),
+              ) 
+                
+              # Generate completion based on the combined portfolio review
+              try:
+                response = client.chat.completions.create(
+                  model="gpt-4o-mini",
+                  messages=[
+                    {
+                      "role": "user",
+                      "content": ask,
+                    }
+                  ]
+                )
+
+                # Extract content from the first choice
+                message_content = response.choices[0].message.content
+                stock_info = {
+                  'symbol': symbol,
+                  'currentPrice': currentPrice,
+                  'name': name,
+                  'sector': sector,
+                  'previousClose': previousClose,
+                  'history': monthly_average,
+                  'correction': message_content
+                }
+                return jsonify(stock_info)
+              except Exception as e:
+                return jsonify({'error': f'Failed to analyze search term: {str(e)}'}), 500
+
             stock_info = {
                 'symbol': symbol,
                 'currentPrice': currentPrice,
@@ -286,12 +327,14 @@ def get_stocks_info(tickers):
               name = info.get('longName', None)
               sector = info.get('sector', None)
               previousClose = info.get('previousClose', None)
+              website = info.get('website', None)
               stock_info = {
                   'symbol': symbol,
                   'currentPrice': currentPrice,
                   'name': name,
                   'sector': sector,
-                  'previousClose': previousClose
+                  'previousClose': previousClose,
+                  'website': website
               }
               output_stocks.append(stock_info)
         else:
@@ -456,6 +499,46 @@ def get_user_transactions():
     "userId": user_id,
     "transactions": transactions,
   })
+
+# analyze portfolio    
+@app.route("/review-portfolio", methods=["GET"])
+def generate_portfolio_analysis():
+  user_id = session["user_id"]
+  
+  if not user_id:
+    return jsonify({"error": "Unauthorized"}), 401
+  
+  stocks= Holding.query.filter_by(userId = user_id).all()
+  holdings = [{column.name: getattr(row, column.name) for column in Holding.__table__.columns} for row in stocks]
+  mod_holdings = [{k: v for k, v in d.items() if k != 'userId'} for d in holdings]
+
+  portfolio_review = f"You are a stock portfolio analyzer. I have a stock portfolio as follows: \n{mod_holdings}\n Give me three bullet points of 1 senetnce each on What's good about my stock portfolio, What can be improved about my portfolio and What can I buy next to improve my portfolio. The response should be in utf-8 format and not markdown so i can easily show it on a html page."
+
+  # Initialize OpenAI client with API key
+  load_dotenv()
+  OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+  client = OpenAI(
+    # This is the default and can be omitted
+    api_key=os.environ.get("OPENAI_API_KEY"),
+  ) 
+    
+  # Generate completion based on the combined portfolio review
+  try:
+    response = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[
+        {
+          "role": "user",
+          "content": portfolio_review,
+        }
+      ]
+    )
+
+    # Extract content from the first choice
+    message_content = response.choices[0].message.content
+    return message_content
+  except Exception as e:
+    return jsonify({'error': f'Failed to analyze portfolio: {str(e)}'}), 500
 
 if __name__ == "__main__":
   app.run(debug=True)
