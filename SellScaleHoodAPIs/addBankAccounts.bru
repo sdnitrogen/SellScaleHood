@@ -1,0 +1,29 @@
+meta {
+  name: addBankAccounts
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:5000/add-bank-accounts
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userId": "87afab17a56d4c8b8a53ce31fffa0b0a",
+    "bankAccounts": [
+      {
+          "currentBalance": 5000,
+          "mask": "1234",
+          "name": "Checking Account"
+      },
+      {
+          "currentBalance": 5000,
+          "mask": "1234",
+          "name": "Savings Account"
+      }
+    ]
+  }
+}

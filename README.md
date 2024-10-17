@@ -84,6 +84,7 @@ export FLASK_ENV = development
 
 - copy the .env.example filed to a new file named ".env"
 - set the SECRET_KEY=XXXXXXXXXXXXX where the Xs are any string you want to.
+- set the OPENAI_API_KEY=XXXXXXXXXXXXX where the Xs are the OpenAI Api key of your account.
 
 - start a redis server
 

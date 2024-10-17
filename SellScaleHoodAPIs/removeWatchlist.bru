@@ -1,0 +1,17 @@
+meta {
+  name: removeWatchlist
+  type: http
+  seq: 10
+}
+
+post {
+  url: http://localhost:5000/remove-watchlist
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "ticker": "AAPL"
+  }
+}

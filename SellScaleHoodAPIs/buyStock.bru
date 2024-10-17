@@ -1,0 +1,19 @@
+meta {
+  name: buyStock
+  type: http
+  seq: 13
+}
+
+post {
+  url: http://localhost:5000/buy
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "ticker": "GOOGL",
+    "volume": 2,
+    "from": "7bf53a3cc5be42558e1ec4863b5bb43e"
+  }
+}

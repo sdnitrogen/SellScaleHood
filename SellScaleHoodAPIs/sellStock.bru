@@ -1,0 +1,19 @@
+meta {
+  name: sellStock
+  type: http
+  seq: 14
+}
+
+post {
+  url: http://localhost:5000/sell
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "ticker": "AAPL",
+    "volume": 12,
+    "to": "4c591cd9ea454d44834d3eeb51ac7358"
+  }
+}

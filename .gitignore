@@ -38,7 +38,6 @@ yarn-error.log*
 
 
 /.venv
-/SellScaleHood
 
 /server/.env
 /server/dump.rdb
