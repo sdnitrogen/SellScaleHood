@@ -10,6 +10,12 @@ Demo 1 (For end-users) : [Link](https://www.loom.com/share/20ca8c673e0a455b96bef
 
 Demo 2 (For engineers) : [Link](https://www.loom.com/share/780c8d0a24f0492bb2bef81f6565fed8?sid=68903e4f-efeb-49e7-b461-54517284ea20)
 
+### Preview
+
+<img src="SellScaleHood-screen-1.jpeg" align="center"><br><br>
+<img src="SellScaleHood-screen-2.jpeg" align="center"><br><br>
+<img src="SellScaleHood-screen-3.jpeg" align="center"><br><br>
+
 ### Features
 
 - [x] User authentication
